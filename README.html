@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Colores Cerebrales</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Fuente Inter para una mejor legibilidad */
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: #f3f4f6; /* Gris claro de fondo */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Alinea al inicio para permitir scroll */
+            min-height: 100vh; /* Altura mínima para ocupar toda la pantalla */
+            padding: 2rem 1rem; /* Espaciado general */
+        }
+        .container {
+            max-width: 800px; /* Ancho máximo del contenedor principal */
+            background-color: #ffffff; /* Fondo blanco para el contenido */
+            border-radius: 1.5rem; /* Bordes redondeados */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Sombra sutil */
+            padding: 2.5rem; /* Relleno interno */
+            margin-top: 2rem; /* Margen superior */
+            margin-bottom: 2rem; /* Margen inferior */
+        }
+        .question-card {
+            background-color: #f9fafb; /* Fondo ligeramente diferente para cada pregunta */
+            border-radius: 1rem; /* Bordes redondeados para las tarjetas de pregunta */
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e5e7eb; /* Borde sutil */
+        }
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid #d1d5db;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .option-label:hover {
+            background-color: #eff6ff; /* Azul claro al pasar el ratón */
+            border-color: #93c5fd; /* Borde azul al pasar el ratón */
+        }
+        .option-label input[type="radio"]:checked + span {
+            font-weight: 600; /* Texto en negrita cuando seleccionado */
+            color: #1d4ed8; /* Color de texto azul cuando seleccionado */
+        }
+        .option-label input[type="radio"]:checked {
+            accent-color: #2563eb; /* Color del radio button cuando seleccionado */
+        }
+        .result-box {
+            background-color: #ecfdf5; /* Fondo verde claro para resultados */
+            border: 1px solid #a7f3d0; /* Borde verde */
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            text-align: center;
+        }
+        .result-item {
+            display: flex;
+            flex-direction: column; /* Apila el texto y la barra */
+            align-items: flex-start; /* Alinea el contenido a la izquierda */
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed #d1d5db;
+            width: 100%; /* Asegura que el item ocupe todo el ancho */
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        .score-text {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 0.25rem; /* Pequeño espacio entre texto y barra */
+        }
+        .score-text span:first-child {
+            font-weight: 500;
+            color: #374151;
+        }
+        .score-text span:last-child {
+            font-weight: 700;
+            color: #047857; /* Verde oscuro para los puntos */
+            font-size: 1.125rem;
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e0e0e0; /* Fondo de la barra de progreso */
+            border-radius: 0.5rem;
+            height: 1rem; /* Altura de la barra de progreso */
+            overflow: hidden; /* Asegura que el color no se desborde */
+        }
+        .progress-bar {
+            height: 100%;
+            border-radius: 0.5rem;
+            transition: width 0.5s ease-in-out; /* Animación de la barra */
+        }
+
+        /* Colores específicos para las barras de progreso */
+        .bg-orange-500 { background-color: #f97316; }
+        .bg-blue-500 { background-color: #3b82f6; }
+        .bg-yellow-500 { background-color: #eab308; }
+        .bg-green-500 { background-color: #22c55e; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-4xl font-extrabold text-center text-gray-900 mb-6">
+            Auto-Diagnóstico de Colores Cerebrales
+        </h1>
+        <p class="text-center text-gray-600 mb-8">
+            (Versión: Mi Esencia en una Palabra)
+        </p>
+
+        <p class="text-lg text-gray-700 mb-4">
+            <strong>Propósito:</strong> Ayudarnos a comprender nuestras preferencias naturales de pensamiento, comunicación y trabajo, utilizando el marco de los "Colores Cerebrales". Esto fomentará una mayor empatía, comunicación y confianza dentro de nuestro equipo.
+        </p>
+        <p class="text-lg text-gray-700 mb-8">
+            <strong>Instrucciones:</strong> Para cada pregunta, elige la palabra que mejor te describe o resuena contigo. Selecciona solo UNA palabra por pregunta. Al final, suma tus elecciones para ver qué colores predominan.
+        </p>
+
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Las 15 Preguntas del Quiz:</h2>
+
+        <form id="quizForm">
+            <!-- Las preguntas se generarán aquí con JavaScript -->
+        </form>
+
+        <button id="submitQuiz" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 mt-8">
+            Ver Mis Resultados
+        </button>
+
+        <div id="results" class="result-box hidden">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Mi Puntuación de Colores Cerebrales:</h2>
+            <div id="scoreDisplay">
+                <!-- Los resultados se mostrarán aquí -->
+            </div>
+            <button id="resetQuiz" class="mt-6 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-400">
+                Reiniciar Quiz
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Array de objetos que contiene todas las preguntas y opciones del quiz
+        const questions = [
+            {
+                question: "En un proyecto nuevo, mi rol preferido es:",
+                options: [
+                    { text: "Emprendedor", color: "Naranja" },
+                    { text: "Colaborador", color: "Azul" },
+                    { text: "Organizador", color: "Amarillo" },
+                    { text: "Analista", color: "Verde" }
+                ]
+            },
+            {
+                question: "Mi valor principal en el equipo es la:",
+                options: [
+                    { text: "Aventura", color: "Naranja" },
+                    { text: "Armonía", color: "Azul" },
+                    { text: "Estabilidad", color: "Amarillo" },
+                    { text: "Eficiencia", color: "Verde" }
+                ]
+            },
+            {
+                question: "Cuando enfrento el cambio, yo tiendo a:",
+                options: [
+                    { text: "Abrazarlo", color: "Naranja" },
+                    { text: "Sentirlo", color: "Azul" },
+                    { text: "Planificarlo", color: "Amarillo" },
+                    { text: "Procesarlo", color: "Verde" }
+                ]
+            },
+            {
+                question: "Mi actitud natural es de:",
+                options: [
+                    { text: "Entusiasmo", color: "Naranja" },
+                    { text: "Apasionado", color: "Azul" },
+                    { text: "Preocupado", color: "Amarillo" },
+                    { text: "Serenidad", color: "Verde" }
+                ]
+            },
+            {
+                question: "De mis colegas, requiero:",
+                options: [
+                    { text: "Resultados", color: "Naranja" },
+                    { text: "Discusiones", color: "Azul" },
+                    { text: "Instrucciones", color: "Amarillo" },
+                    { text: "Tecnología", color: "Verde" }
+                ]
+            },
+            {
+                question: "En mis relaciones personales, soy:",
+                options: [
+                    { text: "Enérgico", color: "Naranja" },
+                    { text: "Considerado", color: "Azul" },
+                    { text: "Práctico", color: "Amarillo" },
+                    { text: "Sensible", color: "Verde" }
+                ]
+            },
+            {
+                question: "Mi mayor factor de estrés es:",
+                options: [
+                    { text: "Reglas", color: "Naranja" },
+                    { text: "Incooperación", color: "Azul" },
+                    { text: "Desorganización", color: "Amarillo" },
+                    { text: "Incompetencia", color: "Verde" }
+                ]
+            },
+            {
+                question: "Para alimentar mi confianza, necesito reconocer mi:",
+                options: [
+                    { text: "Generosidad", color: "Naranja" },
+                    { text: "Compasión", color: "Azul" },
+                    { text: "Lealtad", color: "Amarillo" },
+                    { text: "Competencia", color: "Verde" }
+                ]
+            },
+            {
+                question: "Cuando era niño, era más bien:",
+                options: [
+                    { text: "Impulsivo", color: "Naranja" },
+                    { text: "Imaginativo", color: "Azul" },
+                    { text: "Modelo", color: "Amarillo" },
+                    { text: "Curioso", color: "Verde" }
+                ]
+            },
+            {
+                question: "Otros podrían verme como (cuando no estoy en mi mejor momento):",
+                options: [
+                    { text: "Desorganizado", color: "Naranja" },
+                    { text: "Emocional", color: "Azul" },
+                    { text: "Inflexible", color: "Amarillo" },
+                    { text: "Insensible", color: "Verde" }
+                ]
+            },
+            {
+                question: "Cuando estoy frustrado, mi reacción es:",
+                options: [
+                    { text: "Desconectarme", color: "Naranja" },
+                    { text: "Deprimirme", color: "Azul" },
+                    { text: "Ansiedad", color: "Amarillo" },
+                    { text: "Retirarme", color: "Verde" }
+                ]
+            },
+            {
+                question: "Mi prioridad principal en la vida es la:",
+                options: [
+                    { text: "Diversión", color: "Naranja" },
+                    { text: "Afecto", color: "Azul" },
+                    { text: "Responsabilidad", color: "Amarillo" },
+                    { text: "Privacidad", color: "Verde" }
+                ]
+            },
+            {
+                question: "Yo soy naturalmente:",
+                options: [
+                    { text: "Negociador", color: "Naranja" },
+                    { text: "Protector", color: "Azul" },
+                    { text: "Respetuoso", color: "Amarillo" },
+                    { text: "Visionario", color: "Verde" }
+                ]
+            },
+            {
+                question: "Me veo a mí mismo como:",
+                options: [
+                    { text: "Dinámico", color: "Naranja" },
+                    { text: "Creativo", color: "Azul" },
+                    { text: "Confiable", color: "Amarillo" },
+                    { text: "Lógico", color: "Verde" }
+                ]
+            },
+            {
+                question: "En un desacuerdo, busco principalmente:",
+                options: [
+                    { text: "Soluciones", color: "Naranja" },
+                    { text: "Armonía", color: "Azul" },
+                    { text: "Orden", color: "Amarillo" },
+                    { text: "Razón", color: "Verde" }
+                ]
+            }
+        ];
+
+        // Obtener referencias a los elementos del DOM
+        const quizForm = document.getElementById('quizForm');
+        const submitButton = document.getElementById('submitQuiz');
+        const resultsDiv = document.getElementById('results');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const resetButton = document.getElementById('resetQuiz');
+
+        // Función para generar dinámicamente las preguntas del quiz
+        function renderQuiz() {
+            quizForm.innerHTML = ''; // Limpiar cualquier contenido previo
+            questions.forEach((q, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.classList.add('question-card');
+
+                const questionText = document.createElement('p');
+                questionText.classList.add('text-xl', 'font-semibold', 'text-gray-800', 'mb-4');
+                questionText.textContent = `${index + 1}. ${q.question}`;
+                questionCard.appendChild(questionText);
+
+                q.options.forEach(option => {
+                    const label = document.createElement('label');
+                    label.classList.add('option-label');
+
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question${index}`; // Nombre único para cada grupo de radio buttons
+                    input.value = option.color; // El valor será el color asociado
+                    input.classList.add('mr-3', 'h-5', 'w-5', 'text-blue-600', 'border-gray-300', 'focus:ring-blue-500');
+
+                    const span = document.createElement('span');
+                    span.classList.add('text-lg', 'text-gray-700');
+                    span.textContent = option.text;
+
+                    label.appendChild(input);
+                    label.appendChild(span);
+                    questionCard.appendChild(label);
+                });
+                quizForm.appendChild(questionCard);
+            });
+        }
+
+        // Función para calcular y mostrar los resultados
+        function calculateResults() {
+            const scores = {
+                Naranja: 0,
+                Azul: 0,
+                Amarillo: 0,
+                Verde: 0
+            };
+
+            let allAnswered = true; // Bandera para verificar si todas las preguntas fueron respondidas
+
+            questions.forEach((q, index) => {
+                const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                if (selectedOption) {
+                    scores[selectedOption.value]++;
+                } else {
+                    allAnswered = false; // Si alguna pregunta no fue respondida, la bandera es falsa
+                }
+            });
+
+            if (!allAnswered) {
+                // Si no todas las preguntas fueron respondidas, mostrar un mensaje de advertencia
+                alert("Por favor, responde todas las preguntas antes de ver los resultados.");
+                return;
+            }
+
+            // Calcular el total de preguntas
+            const totalQuestions = questions.length;
+
+            // Calcular porcentajes
+            const percentages = {
+                Naranja: ((scores.Naranja / totalQuestions) * 100).toFixed(1),
+                Azul: ((scores.Azul / totalQuestions) * 100).toFixed(1),
+                Amarillo: ((scores.Amarillo / totalQuestions) * 100).toFixed(1),
+                Verde: ((scores.Verde / totalQuestions) * 100).toFixed(1)
+            };
+
+            // Ocultar el formulario y el botón de enviar
+            quizForm.classList.add('hidden');
+            submitButton.classList.add('hidden');
+
+            // Mostrar la sección de resultados
+            resultsDiv.classList.remove('hidden');
+            scoreDisplay.innerHTML = ''; // Limpiar resultados previos
+
+            // Mapeo de colores a clases de Tailwind para las barras de progreso
+            const colorClasses = {
+                Naranja: 'bg-orange-500',
+                Azul: 'bg-blue-500',
+                Amarillo: 'bg-yellow-500',
+                Verde: 'bg-green-500'
+            };
+
+            // Mostrar las puntuaciones de cada color como porcentajes con barra de progreso
+            for (const color in percentages) {
+                const scoreItem = document.createElement('div');
+                scoreItem.classList.add('result-item');
+                scoreItem.innerHTML = `
+                    <div class="score-text">
+                        <span>${color}:</span>
+                        <span>${percentages[color]}%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar ${colorClasses[color]}" style="width: ${percentages[color]}%;"></div>
+                    </div>
+                `;
+                scoreDisplay.appendChild(scoreItem);
+            }
+        }
+
+        // Función para reiniciar el quiz
+        function resetQuiz() {
+            quizForm.reset(); // Reiniciar todos los campos del formulario
+            quizForm.classList.remove('hidden'); // Mostrar el formulario
+            submitButton.classList.remove('hidden'); // Mostrar el botón de enviar
+            resultsDiv.classList.add('hidden'); // Ocultar los resultados
+            renderQuiz(); // Volver a renderizar el quiz para asegurar el estado inicial
+        }
+
+        // Event Listeners
+        submitButton.addEventListener('click', calculateResults);
+        resetButton.addEventListener('click', resetQuiz);
+
+        // Renderizar el quiz cuando la página carga
+        document.addEventListener('DOMContentLoaded', renderQuiz);
+    </script>
+</body>
+</html>
