@@ -3,414 +3,370 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz de Colores Cerebrales</title>
-    <!-- Carga de Tailwind CSS -->
+    <title>Test de Colores del Cerebro - Metodología Sheila Glazov</title>
+    <!-- Tailwind CSS para el diseño -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Fuente Inter para una mejor legibilidad */
-        body {
-            font-family: "Inter", sans-serif;
-            background-color: #f3f4f6; /* Gris claro de fondo */
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Alinea al inicio para permitir scroll */
-            min-height: 100vh; /* Altura mínima para ocupar toda la pantalla */
-            padding: 2rem 1rem; /* Espaciado general */
+        body { 
+            font-family: 'Outfit', sans-serif;
+            background: #f8fafc;
         }
-        .container {
-            max-width: 800px; /* Ancho máximo del contenedor principal */
-            background-color: #ffffff; /* Fondo blanco para el contenido */
-            border-radius: 1.5rem; /* Bordes redondeados */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Sombra sutil */
-            padding: 2.5rem; /* Relleno interno */
-            margin-top: 2rem; /* Margen superior */
-            margin-bottom: 2rem; /* Margen inferior */
+        
+        /* Botones de puntuación */
+        .score-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .question-card {
-            background-color: #f9fafb; /* Fondo ligeramente diferente para cada pregunta */
-            border-radius: 1rem; /* Bordes redondeados para las tarjetas de pregunta */
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid #e5e7eb; /* Borde sutil */
-        }
-        .option-label {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem 1rem;
-            border-radius: 0.75rem;
-            border: 1px solid #d1d5db;
-            margin-bottom: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-        }
-        .option-label:hover {
-            background-color: #eff6ff; /* Azul claro al pasar el ratón */
-            border-color: #93c5fd; /* Borde azul al pasar el ratón */
-        }
-        .option-label input[type="radio"]:checked + span {
-            font-weight: 600; /* Texto en negrita cuando seleccionado */
-            color: #1d4ed8; /* Color de texto azul cuando seleccionado */
-        }
-        .option-label input[type="radio"]:checked {
-            accent-color: #2563eb; /* Color del radio button cuando seleccionado */
-        }
-        .result-box {
-            background-color: #ecfdf5; /* Fondo verde claro para resultados */
-            border: 1px solid #a7f3d0; /* Borde verde */
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin-top: 2rem;
-            text-align: center;
-        }
-        .result-item {
-            display: flex;
-            flex-direction: column; /* Apila el texto y la barra */
-            align-items: flex-start; /* Alinea el contenido a la izquierda */
-            padding: 0.5rem 0;
-            border-bottom: 1px dashed #d1d5db;
-            width: 100%; /* Asegura que el item ocupe todo el ancho */
-        }
-        .result-item:last-child {
-            border-bottom: none;
-        }
-        .score-text {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-bottom: 0.25rem; /* Pequeño espacio entre texto y barra */
-        }
-        .score-text span:first-child {
-            font-weight: 500;
-            color: #374151;
-        }
-        .score-text span:last-child {
-            font-weight: 700;
-            color: #047857; /* Verde oscuro para los puntos */
-            font-size: 1.125rem;
-        }
-        .progress-bar-container {
-            width: 100%;
-            background-color: #e0e0e0; /* Fondo de la barra de progreso */
-            border-radius: 0.5rem;
-            height: 1rem; /* Altura de la barra de progreso */
-            overflow: hidden; /* Asegura que el color no se desborde */
-        }
-        .progress-bar {
-            height: 100%;
-            border-radius: 0.5rem;
-            transition: width 0.5s ease-in-out; /* Animación de la barra */
+        
+        .score-btn.selected {
+            background: #4f46e5;
+            color: white;
+            border-color: #4338ca;
+            transform: scale(1.1);
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
         }
 
-        /* Colores específicos para las barras de progreso */
-        .bg-orange-500 { background-color: #f97316; }
-        .bg-blue-500 { background-color: #3b82f6; }
-        .bg-yellow-500 { background-color: #eab308; }
-        .bg-green-500 { background-color: #22c55e; }
+        .score-btn:disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+        }
+
+        /* Tarjetas de opciones */
+        .option-card {
+            transition: all 0.3s ease;
+        }
+
+        .option-card.complete {
+            background: white;
+            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Colores Oficiales Sheila Glazov */
+        .bg-amarillo { background: #eab308; } /* Organizado */
+        .bg-azul { background: #2563eb; }     /* Comunicativo */
+        .bg-verde { background: #16a34a; }    /* Analítico */
+        .bg-naranja { background: #ea580c; }  /* Acción */
+
+        /* Estilo de burbuja de comentario para la fortaleza */
+        .comment-bubble {
+            position: relative;
+            background: #ffffff;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+        .comment-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 2rem;
+            width: 16px;
+            height: 16px;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            transform: rotate(45deg);
+        }
+
+        /* Animación de entrada */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade { animation: fadeIn 0.5s ease-out forwards; }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1 class="text-4xl font-extrabold text-center text-gray-900 mb-6">
-            Auto-Diagnóstico de Colores Cerebrales
-        </h1>
-        <p class="text-center text-gray-600 mb-8">
-            (Versión: Mi Esencia en una Palabra)
-        </p>
+<body class="text-slate-900 min-h-screen flex flex-col">
 
-        <p class="text-lg text-gray-700 mb-4">
-            <strong>Propósito:</strong> Ayudarnos a comprender nuestras preferencias naturales de pensamiento, comunicación y trabajo, utilizando el marco de los "Colores Cerebrales". Esto fomentará una mayor empatía, comunicación y confianza dentro de nuestro equipo.
-        </p>
-        <p class="text-lg text-gray-700 mb-8">
-            <strong>Instrucciones:</strong> Para cada pregunta, elige la palabra que mejor te describe o resuena contigo. Selecciona solo UNA palabra por pregunta. Al final, suma tus elecciones para ver qué colores predominan.
-        </p>
-
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">Las 15 Preguntas del Quiz:</h2>
-
-        <form id="quizForm">
-            <!-- Las preguntas se generarán aquí con JavaScript -->
-        </form>
-
-        <button id="submitQuiz" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 mt-8">
-            Ver Mis Resultados
-        </button>
-
-        <div id="results" class="result-box hidden">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Mi Puntuación de Colores Cerebrales:</h2>
-            <div id="scoreDisplay">
-                <!-- Los resultados se mostrarán aquí -->
+    <!-- Encabezado con progreso -->
+    <header class="bg-white sticky top-0 z-50 border-b border-slate-100">
+        <div class="max-w-5xl mx-auto px-6 py-5 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-bold text-slate-800 leading-none tracking-tight">Brain Colors</h1>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Metodología Sheila Glazov</p>
             </div>
-            <button id="resetQuiz" class="mt-6 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-400">
-                Reiniciar Quiz
-            </button>
+            <div class="flex items-center gap-4">
+                <div id="progress-text" class="text-[10px] font-bold text-slate-400 uppercase">Progreso</div>
+                <div class="w-24 md:w-40 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-indigo-500 transition-all duration-700" style="width: 0%"></div>
+                </div>
+            </div>
         </div>
-    </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-6 py-10 flex-grow">
+        
+        <!-- Instrucciones del Test -->
+        <section id="intro-card" class="bg-white p-8 rounded-3xl border border-slate-100 mb-8 shadow-sm">
+            <h2 class="text-2xl font-bold text-slate-800 mb-3 text-center md:text-left">Instrucciones</h2>
+            <p class="text-slate-500 leading-relaxed text-sm">
+                Basado en la metodología de <b>Sheila N. Glazov</b>. Califica las cuatro opciones de cada bloque con los números del <b>1 al 4</b>:
+                <br><br>
+                • <b>4:</b> Lo que más te define.<br>
+                • <b>1:</b> Lo que menos te define.<br><br>
+                <span class="text-indigo-600 font-medium italic">Tip: Si deseas cambiar un número, haz clic nuevamente en él para deseleccionarlo.</span>
+            </p>
+        </section>
+
+        <!-- Contenedor del Test -->
+        <div id="test-wrapper">
+            <div id="question-container"></div>
+
+            <!-- Navegación -->
+            <div class="mt-10 flex flex-col md:flex-row gap-6 items-center justify-between">
+                <button id="prev-btn" onclick="moveQuestion(-1)" class="invisible text-slate-400 font-bold hover:text-indigo-600 transition-colors">← Anterior</button>
+                <div id="status-msg" class="text-[10px] font-bold text-amber-500 uppercase tracking-tighter hidden">Usa 1, 2, 3 y 4 una vez por bloque</div>
+                <button id="next-btn" onclick="moveQuestion(1)" class="w-full md:w-auto px-10 py-4 bg-slate-900 text-white rounded-xl font-bold hover:bg-black transition-all">Siguiente Pregunta</button>
+            </div>
+        </div>
+
+        <!-- Pantalla de Resultados -->
+        <div id="result-screen" class="hidden animate-fade">
+            <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100">
+                <h2 class="text-3xl font-black text-slate-900 mb-2 text-center md:text-left">Tu Perfil Cerebral</h2>
+                <p class="text-slate-400 mb-10 text-sm text-center md:text-left">Resultados basados en el modelo "What Color Is Your Brain?"</p>
+                
+                <div id="results-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12"></div>
+
+                <!-- Reflexión de Fortaleza (Diseño de Comentario) -->
+                <div class="flex gap-4 items-start max-w-2xl mx-auto md:mx-0">
+                    <div class="w-10 h-10 rounded-full bg-slate-100 flex-shrink-0 flex items-center justify-center text-slate-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+                    </div>
+                    <div class="comment-bubble shadow-sm flex-1">
+                        <h4 class="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-2">Reflexión sobre tu fortaleza</h4>
+                        <p id="desc-text" class="text-slate-600 leading-relaxed font-medium text-lg"></p>
+                    </div>
+                </div>
+
+                <button onclick="location.reload()" class="mt-12 w-full py-4 bg-slate-50 text-slate-600 rounded-xl font-bold hover:bg-slate-100 transition-all text-sm">Repetir Test</button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Pie de página (Créditos y Copyright) -->
+    <footer class="bg-white border-t border-slate-100 py-10 mt-12">
+        <div class="max-w-5xl mx-auto px-6 text-center">
+            <p class="text-slate-400 text-xs font-medium uppercase tracking-widest mb-4">Créditos de Metodología</p>
+            <p class="text-slate-600 text-sm max-w-2xl mx-auto leading-relaxed">
+                Este instrumento es una adaptación con fines educativos basada en la metodología original de 
+                <strong>Sheila N. Glazov</strong>, autora del libro 
+                <span class="italic text-slate-800">"What Color Is Your Brain?®"</span>.
+            </p>
+            <div class="flex flex-wrap justify-center gap-6 mt-6">
+                <a href="https://sheilaglazov.com/" target="_blank" class="text-indigo-600 hover:text-indigo-800 text-xs font-bold transition-colors">Sitio Oficial</a>
+                <a href="https://www.amazon.com/Fascinating-Approach-Understanding-Yourself-Others/dp/1556428073/" target="_blank" class="text-indigo-600 hover:text-indigo-800 text-xs font-bold transition-colors">Comprar Libro en Amazon</a>
+            </div>
+            <p class="text-slate-300 text-[10px] mt-8">
+                © <script>document.write(new Date().getFullYear())</script> Adaptación para testcoloresdelcerebro.com. Todos los derechos reservados a la autora original.
+            </p>
+        </div>
+    </footer>
 
     <script>
-        // Array de objetos que contiene todas las preguntas y opciones del quiz
+        // Listado de 10 preguntas
         const questions = [
-            {
-                question: "En un proyecto nuevo, mi rol preferido es:",
-                options: [
-                    { text: "Emprendedor", color: "Naranja" },
-                    { text: "Colaborador", color: "Azul" },
-                    { text: "Organizador", color: "Amarillo" },
-                    { text: "Analista", color: "Verde" }
-                ]
-            },
-            {
-                question: "Mi valor principal en el equipo es la:",
-                options: [
-                    { text: "Aventura", color: "Naranja" },
-                    { text: "Armonía", color: "Azul" },
-                    { text: "Estabilidad", color: "Amarillo" },
-                    { text: "Eficiencia", color: "Verde" }
-                ]
-            },
-            {
-                question: "Cuando enfrento el cambio, yo tiendo a:",
-                options: [
-                    { text: "Abrazarlo", color: "Naranja" },
-                    { text: "Sentirlo", color: "Azul" },
-                    { text: "Planificarlo", color: "Amarillo" },
-                    { text: "Procesarlo", color: "Verde" }
-                ]
-            },
-            {
-                question: "Mi actitud natural es de:",
-                options: [
-                    { text: "Entusiasmo", color: "Naranja" },
-                    { text: "Apasionado", color: "Azul" },
-                    { text: "Preocupado", color: "Amarillo" },
-                    { text: "Serenidad", color: "Verde" }
-                ]
-            },
-            {
-                question: "De mis colegas, requiero:",
-                options: [
-                    { text: "Resultados", color: "Naranja" },
-                    { text: "Discusiones", color: "Azul" },
-                    { text: "Instrucciones", color: "Amarillo" },
-                    { text: "Tecnología", color: "Verde" }
-                ]
-            },
-            {
-                question: "En mis relaciones personales, soy:",
-                options: [
-                    { text: "Enérgico", color: "Naranja" },
-                    { text: "Considerado", color: "Azul" },
-                    { text: "Práctico", color: "Amarillo" },
-                    { text: "Sensible", color: "Verde" }
-                ]
-            },
-            {
-                question: "Mi mayor factor de estrés es:",
-                options: [
-                    { text: "Reglas", color: "Naranja" },
-                    { text: "Incooperación", color: "Azul" },
-                    { text: "Desorganización", color: "Amarillo" },
-                    { text: "Incompetencia", color: "Verde" }
-                ]
-            },
-            {
-                question: "Para alimentar mi confianza, necesito reconocer mi:",
-                options: [
-                    { text: "Generosidad", color: "Naranja" },
-                    { text: "Compasión", color: "Azul" },
-                    { text: "Lealtad", color: "Amarillo" },
-                    { text: "Competencia", color: "Verde" }
-                ]
-            },
-            {
-                question: "Cuando era niño, era más bien:",
-                options: [
-                    { text: "Impulsivo", color: "Naranja" },
-                    { text: "Imaginativo", color: "Azul" },
-                    { text: "Modelo", color: "Amarillo" },
-                    { text: "Curioso", color: "Verde" }
-                ]
-            },
-            {
-                question: "Otros podrían verme como (cuando no estoy en mi mejor momento):",
-                options: [
-                    { text: "Desorganizado", color: "Naranja" },
-                    { text: "Emocional", color: "Azul" },
-                    { text: "Inflexible", color: "Amarillo" },
-                    { text: "Insensible", color: "Verde" }
-                ]
-            },
-            {
-                question: "Cuando estoy frustrado, mi reacción es:",
-                options: [
-                    { text: "Desconectarme", color: "Naranja" },
-                    { text: "Deprimirme", color: "Azul" },
-                    { text: "Ansiedad", color: "Amarillo" },
-                    { text: "Retirarme", color: "Verde" }
-                ]
-            },
-            {
-                question: "Mi prioridad principal en la vida es la:",
-                options: [
-                    { text: "Diversión", color: "Naranja" },
-                    { text: "Afecto", color: "Azul" },
-                    { text: "Responsabilidad", color: "Amarillo" },
-                    { text: "Privacidad", color: "Verde" }
-                ]
-            },
-            {
-                question: "Yo soy naturalmente:",
-                options: [
-                    { text: "Negociador", color: "Naranja" },
-                    { text: "Protector", color: "Azul" },
-                    { text: "Respetuoso", color: "Amarillo" },
-                    { text: "Visionario", color: "Verde" }
-                ]
-            },
-            {
-                question: "Me veo a mí mismo como:",
-                options: [
-                    { text: "Dinámico", color: "Naranja" },
-                    { text: "Creativo", color: "Azul" },
-                    { text: "Confiable", color: "Amarillo" },
-                    { text: "Lógico", color: "Verde" }
-                ]
-            },
-            {
-                question: "En un desacuerdo, busco principalmente:",
-                options: [
-                    { text: "Soluciones", color: "Naranja" },
-                    { text: "Armonía", color: "Azul" },
-                    { text: "Orden", color: "Amarillo" },
-                    { text: "Razón", color: "Verde" }
-                ]
-            }
+            { title: "En mi forma de ser habitual, soy alguien que...", options: [
+                { text: "Mantiene el orden, sigue las reglas y es muy responsable.", color: "amarillo" },
+                { text: "Busca la armonía, la comunicación y es muy flexible.", color: "azul" },
+                { text: "Analiza todo lógicamente y valora la independencia.", color: "verde" },
+                { text: "Actúa con energía, es espontáneo y competitivo.", color: "naranja" }
+            ]},
+            { title: "Cuando me enfrento a un problema difícil:", options: [
+                { text: "Busco un plan detallado y sigo los pasos establecidos.", color: "amarillo" },
+                { text: "Trato de resolverlo colaborando y escuchando a otros.", color: "azul" },
+                { text: "Lo desgloso lógicamente para encontrar la causa raíz.", color: "verde" },
+                { text: "Tomo una decisión rápida y me arriesgo a probar algo nuevo.", color: "naranja" }
+            ]},
+            { title: "Mi entorno de trabajo ideal tiene:", options: [
+                { text: "Estructura, puntualidad y metas claras.", color: "amarillo" },
+                { text: "Apoyo, calidez humana y buena comunicación.", color: "azul" },
+                { text: "Autonomía, retos intelectuales y eficiencia.", color: "verde" },
+                { text: "Acción, dinamismo y mucha libertad de movimiento.", color: "naranja" }
+            ]},
+            { title: "Mi mayor orgullo es ser una persona:", options: [
+                { text: "Confiable, leal y organizada.", color: "amarillo" },
+                { text: "Comprensiva, creativa y buena amiga.", color: "azul" },
+                { text: "Inteligente, racional y con visión de futuro.", color: "verde" },
+                { text: "Valiente, activa y capaz de ganar retos.", color: "naranja" }
+            ]},
+            { title: "Cuando estoy bajo mucho estrés:", options: [
+                { text: "Me obsesiono con el orden y me vuelvo rígido.", color: "amarillo" },
+                { text: "Me vuelvo hipersensible o me aíslo emocionalmente.", color: "azul" },
+                { text: "Me vuelvo distante, frío y muy crítico.", color: "verde" },
+                { text: "Me vuelvo impaciente y trato de controlar todo rápido.", color: "naranja" }
+            ]},
+            { title: "Al aprender algo nuevo, prefiero:", options: [
+                { text: "Seguir un manual de instrucciones o guía paso a paso.", color: "amarillo" },
+                { text: "Compartir experiencias y discutirlo con otras personas.", color: "azul" },
+                { text: "Investigar la teoría y los fundamentos por mi cuenta.", color: "verde" },
+                { text: "Aprender sobre la marcha mediante la práctica y el error.", color: "naranja" }
+            ]},
+            { title: "En una reunión de equipo, mi papel suele ser:", options: [
+                { text: "Asegurar que se sigan los puntos de la agenda y los tiempos.", color: "amarillo" },
+                { text: "Facilitar que todos se sientan escuchados y cómodos.", color: "azul" },
+                { text: "Analizar la viabilidad y los datos de las propuestas.", color: "verde" },
+                { text: "Aportar energía y motivar al grupo a tomar acción inmediata.", color: "naranja" }
+            ]},
+            { title: "Mi relación con el dinero se define por:", options: [
+                { text: "El ahorro cuidadoso y la seguridad para el futuro.", color: "amarillo" },
+                { text: "Invertir en experiencias o detalles para mis seres queridos.", color: "azul" },
+                { text: "Gestionar inversiones basadas en la lógica y el rendimiento.", color: "verde" },
+                { text: "Gastar de forma impulsiva en cosas que me emocionan hoy.", color: "naranja" }
+            ]},
+            { title: "Lo que más valoro en el tiempo libre es:", options: [
+                { text: "Tener una rutina productiva o adelantar tareas pendientes.", color: "amarillo" },
+                { text: "Conectar con amigos, familia o tener charlas profundas.", color: "azul" },
+                { text: "Leer, estudiar temas de interés o jugar estrategia.", color: "verde" },
+                { text: "La aventura, los viajes espontáneos y la adrenalina.", color: "naranja" }
+            ]},
+            { title: "Ante un conflicto interpersonal, yo:", options: [
+                { text: "Me baso en lo que es justo y en las normas establecidas.", color: "amarillo" },
+                { text: "Intento mediar para restaurar la armonía y la paz.", color: "azul" },
+                { text: "Evalúo objetivamente los hechos para entender qué falló.", color: "verde" },
+                { text: "Enfrento la situación de cara para resolverla rápido.", color: "naranja" }
+            ]}
         ];
 
-        // Obtener referencias a los elementos del DOM
-        const quizForm = document.getElementById('quizForm');
-        const submitButton = document.getElementById('submitQuiz');
-        const resultsDiv = document.getElementById('results');
-        const scoreDisplay = document.getElementById('scoreDisplay');
-        const resetButton = document.getElementById('resetQuiz');
+        let currentIndex = 0;
+        let responses = {}; // Guarda { qIdx: { color: valor } }
 
-        // Función para generar dinámicamente las preguntas del quiz
-        function renderQuiz() {
-            quizForm.innerHTML = ''; // Limpiar cualquier contenido previo
-            questions.forEach((q, index) => {
-                const questionCard = document.createElement('div');
-                questionCard.classList.add('question-card');
-
-                const questionText = document.createElement('p');
-                questionText.classList.add('text-xl', 'font-semibold', 'text-gray-800', 'mb-4');
-                questionText.textContent = `${index + 1}. ${q.question}`;
-                questionCard.appendChild(questionText);
-
-                q.options.forEach(option => {
-                    const label = document.createElement('label');
-                    label.classList.add('option-label');
-
-                    const input = document.createElement('input');
-                    input.type = 'radio';
-                    input.name = `question${index}`; // Nombre único para cada grupo de radio buttons
-                    input.value = option.color; // El valor será el color asociado
-                    input.classList.add('mr-3', 'h-5', 'w-5', 'text-blue-600', 'border-gray-300', 'focus:ring-blue-500');
-
-                    const span = document.createElement('span');
-                    span.classList.add('text-lg', 'text-gray-700');
-                    span.textContent = option.text;
-
-                    label.appendChild(input);
-                    label.appendChild(span);
-                    questionCard.appendChild(label);
-                });
-                quizForm.appendChild(questionCard);
-            });
+        // Inicializar respuestas
+        function init() {
+            questions.forEach((_, i) => responses[i] = { amarillo: null, azul: null, verde: null, naranja: null });
+            render();
         }
 
-        // Función para calcular y mostrar los resultados
-        function calculateResults() {
-            const scores = {
-                Naranja: 0,
-                Azul: 0,
-                Amarillo: 0,
-                Verde: 0
-            };
+        // Renderizar pregunta actual
+        function render() {
+            const container = document.getElementById('question-container');
+            const q = questions[currentIndex];
+            const prog = ((currentIndex + 1) / questions.length) * 100;
+            
+            document.getElementById('progress-bar').style.width = prog + '%';
+            document.getElementById('prev-btn').style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
+            document.getElementById('next-btn').innerText = currentIndex === questions.length - 1 ? 'Ver Resultados' : 'Siguiente';
 
-            let allAnswered = true; // Bandera para verificar si todas las preguntas fueron respondidas
+            let html = `
+                <div class="animate-fade">
+                    <span class="text-indigo-600 font-bold text-[10px] mb-2 block uppercase tracking-widest text-center md:text-left">Pregunta ${currentIndex + 1} de ${questions.length}</span>
+                    <h3 class="text-xl font-bold text-slate-800 mb-8 leading-tight text-center md:text-left">${q.title}</h3>
+                    <div class="grid gap-4">
+            `;
 
-            questions.forEach((q, index) => {
-                const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
-                if (selectedOption) {
-                    scores[selectedOption.value]++;
-                } else {
-                    allAnswered = false; // Si alguna pregunta no fue respondida, la bandera es falsa
-                }
-            });
-
-            if (!allAnswered) {
-                // Si no todas las preguntas fueron respondidas, mostrar un mensaje de advertencia
-                alert("Por favor, responde todas las preguntas antes de ver los resultados.");
-                return;
-            }
-
-            // Calcular el total de preguntas
-            const totalQuestions = questions.length;
-
-            // Calcular porcentajes
-            const percentages = {
-                Naranja: ((scores.Naranja / totalQuestions) * 100).toFixed(1),
-                Azul: ((scores.Azul / totalQuestions) * 100).toFixed(1),
-                Amarillo: ((scores.Amarillo / totalQuestions) * 100).toFixed(1),
-                Verde: ((scores.Verde / totalQuestions) * 100).toFixed(1)
-            };
-
-            // Ocultar el formulario y el botón de enviar
-            quizForm.classList.add('hidden');
-            submitButton.classList.add('hidden');
-
-            // Mostrar la sección de resultados
-            resultsDiv.classList.remove('hidden');
-            scoreDisplay.innerHTML = ''; // Limpiar resultados previos
-
-            // Mapeo de colores a clases de Tailwind para las barras de progreso
-            const colorClasses = {
-                Naranja: 'bg-orange-500',
-                Azul: 'bg-blue-500',
-                Amarillo: 'bg-yellow-500',
-                Verde: 'bg-green-500'
-            };
-
-            // Mostrar las puntuaciones de cada color como porcentajes con barra de progreso
-            for (const color in percentages) {
-                const scoreItem = document.createElement('div');
-                scoreItem.classList.add('result-item');
-                scoreItem.innerHTML = `
-                    <div class="score-text">
-                        <span>${color}:</span>
-                        <span>${percentages[color]}%</span>
-                    </div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar ${colorClasses[color]}" style="width: ${percentages[color]}%;"></div>
+            q.options.forEach(opt => {
+                const val = responses[currentIndex][opt.color];
+                html += `
+                    <div class="option-card bg-white p-5 rounded-2xl border border-slate-100 ${val ? 'complete' : ''}">
+                        <p class="text-slate-600 mb-4 font-semibold text-sm">${opt.text}</p>
+                        <div class="flex gap-2 justify-center md:justify-start">
+                            ${[1, 2, 3, 4].map(n => {
+                                const sel = val === n;
+                                // Si el número ya se usa en otro color de este bloque, deshabilitar
+                                const used = Object.values(responses[currentIndex]).includes(n) && val !== n;
+                                return `
+                                    <button onclick="setScore('${opt.color}', ${n})" ${used ? 'disabled' : ''}
+                                        class="score-btn w-10 h-10 rounded-xl border font-bold text-sm flex items-center justify-center
+                                        ${sel ? 'selected' : used ? 'bg-slate-50 border-transparent text-slate-200 cursor-not-allowed' : 'border-slate-100 text-slate-400 bg-white hover:border-indigo-200'}">
+                                        ${n}
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
                     </div>
                 `;
-                scoreDisplay.appendChild(scoreItem);
+            });
+            container.innerHTML = html + '</div></div>';
+        }
+
+        // Manejar selección (con lógica de Toggle/Deselección)
+        function setScore(color, value) {
+            // Si el valor ya estaba asignado a este color, lo quitamos (Deselección)
+            if (responses[currentIndex][color] === value) {
+                responses[currentIndex][color] = null;
+            } else {
+                // Si el valor estaba en otro color de la misma pregunta, lo quitamos de allí primero
+                Object.keys(responses[currentIndex]).forEach(c => { 
+                    if (responses[currentIndex][c] === value) responses[currentIndex][c] = null; 
+                });
+                // Asignamos el valor al color actual
+                responses[currentIndex][color] = value;
+            }
+            render();
+            document.getElementById('status-msg').classList.add('hidden');
+        }
+
+        // Navegación entre preguntas
+        function moveQuestion(step) {
+            if (step > 0 && Object.values(responses[currentIndex]).includes(null)) {
+                document.getElementById('status-msg').classList.remove('hidden');
+                return;
+            }
+            currentIndex += step;
+            if (currentIndex >= questions.length) { 
+                showResults(); 
+            } else { 
+                render(); 
+                window.scrollTo({top: 0, behavior: 'smooth'});
             }
         }
 
-        // Función para reiniciar el quiz
-        function resetQuiz() {
-            quizForm.reset(); // Reiniciar todos los campos del formulario
-            quizForm.classList.remove('hidden'); // Mostrar el formulario
-            submitButton.classList.remove('hidden'); // Mostrar el botón de enviar
-            resultsDiv.classList.add('hidden'); // Ocultar los resultados
-            renderQuiz(); // Volver a renderizar el quiz para asegurar el estado inicial
+        // Mostrar Resultados Finales
+        function showResults() {
+            document.getElementById('test-wrapper').classList.add('hidden');
+            document.getElementById('intro-card').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            window.scrollTo({top: 0, behavior: 'smooth'});
+
+            let totals = { amarillo: 0, azul: 0, verde: 0, naranja: 0 };
+            Object.values(responses).forEach(q => Object.keys(q).forEach(c => totals[c] += q[c]));
+
+            const totalSum = totals.amarillo + totals.azul + totals.verde + totals.naranja;
+            const res = {
+                amarillo: ((totals.amarillo / totalSum) * 100).toFixed(1),
+                azul: ((totals.azul / totalSum) * 100).toFixed(1),
+                verde: ((totals.verde / totalSum) * 100).toFixed(1),
+                naranja: ((totals.naranja / totalSum) * 100).toFixed(1)
+            };
+
+            const sorted = Object.keys(res).sort((a, b) => res[b] - res[a]);
+            const labels = { amarillo: "Amarillo (Organizado)", azul: "Azul (Comunicativo)", verde: "Verde (Analítico)", naranja: "Naranja (Acción)" };
+            
+            let html = '';
+            sorted.forEach(key => {
+                html += `
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="font-bold text-xs text-slate-700">${labels[key]}</span>
+                            <span class="text-xl font-black text-slate-900">${res[key]}%</span>
+                        </div>
+                        <div class="w-full bg-white h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-100">
+                            <div class="h-full bg-${key} rounded-full transition-all duration-1000" style="width: 0%" data-val="${res[key]}"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('results-grid').innerHTML = html;
+
+            // Animación de las barras de progreso
+            setTimeout(() => {
+                document.querySelectorAll('[data-val]').forEach(bar => bar.style.width = bar.getAttribute('data-val') + '%');
+            }, 300);
+
+            // Reflexión de la fortaleza dominante
+            const dominant = sorted[0];
+            const descriptions = {
+                amarillo: "Tu mayor fortaleza es la <b>organización y la responsabilidad</b>. Eres una persona puntual, fiable y que valora la estructura por encima de todo. Eres el ancla que mantiene el orden en cualquier proyecto o equipo.",
+                azul: "Tu fortaleza reside en la <b>comunicación y la empatía</b>. Eres una persona flexible, creativa en tus relaciones y un colaborador nato. Tu capacidad para valorar la armonía y los sentimientos te permite conectar profundamente con quienes te rodean.",
+                verde: "Tu mente destaca por el <b>análisis profundo y la lógica</b>. Eres una persona independiente que necesita entender los fundamentos técnicos de todo lo que sucede. Tu capacidad para resolver problemas complejos de forma sistemática es tu gran ventaja.",
+                naranja: "Tu motor principal es la <b>acción y la espontaneidad</b>. Eres una persona enérgica, competitiva y que disfruta de los retos inmediatos que requieren dinamismo. Tu habilidad para actuar bajo presión aporta una energía vital a tu entorno."
+            };
+            document.getElementById('desc-text').innerHTML = descriptions[dominant];
         }
 
-        // Event Listeners
-        submitButton.addEventListener('click', calculateResults);
-        resetButton.addEventListener('click', resetQuiz);
-
-        // Renderizar el quiz cuando la página carga
-        document.addEventListener('DOMContentLoaded', renderQuiz);
+        // Arrancar test
+        init();
     </script>
 </body>
 </html>
